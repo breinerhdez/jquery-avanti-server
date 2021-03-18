@@ -3,6 +3,10 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const { subirArchivo } = require("./subir-archivo");
+const fileupload = require("express-fileupload");
+app.use(fileupload());
+
 app.use(cors());
 
 // parse application/x-www-form-urlencoded
@@ -15,6 +19,18 @@ app.get("/", (req, res) => {
     ok: true,
     result: "Servicio funcionando",
   });
+});
+
+app.post("/files", async (req, res) => {
+  try {
+    console.log(req.files);
+    // el segundo parámetro debe ser un array con las extensiones permitidas
+    // si no se envía usa las que tenga por defecto
+    const nombre = await subirArchivo(req.files, ["pdf"], "");
+    res.json({ nombre });
+  } catch (msg) {
+    res.status(400).json({ msg });
+  }
 });
 
 app.get("/form", (req, res) => {
