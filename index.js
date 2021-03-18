@@ -1,6 +1,14 @@
 require("./config");
 const express = require("express");
+const cors = require("cors");
 const app = express();
+
+app.use(cors());
+
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+// parse application/json
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
