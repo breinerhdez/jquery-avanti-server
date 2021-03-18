@@ -1,10 +1,12 @@
 require("./config");
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const app = express();
 
 const { subirArchivo } = require("./subir-archivo");
 const fileupload = require("express-fileupload");
+
 app.use(fileupload());
 
 app.use(cors());
@@ -23,11 +25,42 @@ app.get("/", (req, res) => {
 
 app.post("/files", async (req, res) => {
   try {
-    console.log(req.files);
     // el segundo parámetro debe ser un array con las extensiones permitidas
     // si no se envía usa las que tenga por defecto
     const nombre = await subirArchivo(req.files, ["pdf"], "");
     res.json({ nombre });
+  } catch (msg) {
+    res.status(400).json({ msg });
+  }
+});
+
+/**
+ * :name es el nombre del archivo sin la extensión
+ */
+app.get("/files/base64/:name", async (req, res) => {
+  try {
+    let nameFile = path.join(__dirname, "/uploads/", `${req.params.name}.pdf`);
+    var buffer = new Buffer(nameFile);
+    var result = [
+      {
+        name: `${req.params.name}.pdf`,
+        file: buffer.toString("base64"),
+      },
+    ];
+
+    res.json({
+      ok: true,
+      result,
+    });
+  } catch (msg) {
+    res.status(400).json({ msg });
+  }
+});
+
+app.get("/files/get-file/:name", async (req, res) => {
+  try {
+    let nameFile = path.join(__dirname, "/uploads/", `${req.params.name}.pdf`);
+    res.sendFile(nameFile);
   } catch (msg) {
     res.status(400).json({ msg });
   }
