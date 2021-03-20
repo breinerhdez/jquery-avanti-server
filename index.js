@@ -16,10 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 // parse application/json
 app.use(express.json());
 
+var formData = [];
 app.get("/", (req, res) => {
   res.json({
     ok: true,
-    result: "Servicio funcionando",
+    result: formData,
   });
 });
 
@@ -67,6 +68,7 @@ app.get("/files/get-file/:name", async (req, res) => {
 });
 
 app.get("/form", (req, res) => {
+  formData.push(req.query);
   res.json({
     ok: true,
     type: "GET Method",
@@ -75,6 +77,7 @@ app.get("/form", (req, res) => {
 });
 
 app.post("/form", (req, res) => {
+  formData.push(req.body);
   res.json({
     ok: true,
     type: "POST Method",
