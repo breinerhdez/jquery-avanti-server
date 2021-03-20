@@ -19,8 +19,8 @@ app.use(express.json());
 var formData = [];
 app.get("/", (req, res) => {
   res.json({
-    ok: true,
-    result: formData,
+    // ok: true,
+    data: formData,
   });
 });
 
